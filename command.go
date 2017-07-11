@@ -36,6 +36,14 @@ func NewCommand(args ...string) *Command {
 	}
 }
 
+// NewCommand creates and returns a new Git Command based on given command and arguments.
+func NewACommand(args ...string) *Command {
+	return &Command{
+		name: "git-annex",
+		args: args,
+	}
+}
+
 // AddArguments adds new argument(s) to the command.
 func (c *Command) AddArguments(args ...string) *Command {
 	c.args = append(c.args, args...)
