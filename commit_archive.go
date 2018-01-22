@@ -8,22 +8,44 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+	"github.com/G-Node/gogs/pkg/setting"
+	"github.com/G-Node/gin-doi/src"
+	"os"
 )
 
 type ArchiveType int
 
 const (
-	ZIP ArchiveType = iota + 1
+	ZIP   ArchiveType = iota + 1
 	TARGZ
+	GIN
 )
 
-func (c *Commit) CreateArchive(target string, archiveType ArchiveType) error {
+func (c *Commit) CreateArchive(target string, archiveType ArchiveType, cloneL string) error {
 	var format string
 	switch archiveType {
 	case ZIP:
 		format = "zip"
 	case TARGZ:
 		format = "tar.gz"
+	case GIN:
+		to := filepath.Join(setting.Repository.Upload.TempPath, "archives", filepath.Base(strings.TrimSuffix(c.repo.Path, ".git")))
+		defer os.RemoveAll(to)
+		_, err := NewCommand("clone", c.repo.Path, to).RunTimeout(-1)
+		if err != nil {
+			return err
+		}
+		_, err = NewCommand("remote", "set-url", "origin", cloneL).RunInDirTimeout(-1, to)
+		if err != nil {
+			return err
+		}
+		fp, err := os.Create(target)
+		defer fp.Close()
+		if err != nil {
+			return err
+		}
+		err = ginDoi.Zip(to, fp)
+		return err
 	default:
 		return fmt.Errorf("unknown format: %v", archiveType)
 	}
