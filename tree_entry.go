@@ -41,6 +41,11 @@ type TreeEntry struct {
 	sized bool
 }
 
+func (te *TreeEntry) SetSize(size int64) {
+	te.size = size
+	te.sized = true
+}
+
 func (te *TreeEntry) Name() string {
 	return te.name
 }
