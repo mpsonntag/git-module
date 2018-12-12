@@ -45,7 +45,7 @@ func (c *Commit) CreateArchive(target string, archiveType ArchiveType, cloneL st
 		if err != nil {
 			return err
 		}
-		err = libgin.MkZip(to, fp)
+		err = libgin.MakeZip(fp, to)
 		return err
 	default:
 		return fmt.Errorf("unknown format: %v", archiveType)
