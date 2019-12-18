@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/G-Node/gogs/pkg/setting"
 	"github.com/G-Node/libgin/libgin"
 )
 
@@ -30,7 +29,9 @@ func (c *Commit) CreateArchive(target string, archiveType ArchiveType, cloneL st
 	case ArchiveTarGz:
 		format = "tar.gz"
 	case ArchiveGIN:
-		to := filepath.Join(setting.Repository.Upload.TempPath, "archives", filepath.Base(strings.TrimSuffix(c.repo.Path, ".git")))
+		// tmppath := setting.Repository.Upload.TempPath // Circular module dependency
+		tmppath := "/data/tmp/uploads" // live config location
+		to := filepath.Join(tmppath, "archives", filepath.Base(strings.TrimSuffix(c.repo.Path, ".git")))
 		defer os.RemoveAll(to)
 		_, err := NewCommand("clone", c.repo.Path, to).RunTimeout(-1)
 		if err != nil {
