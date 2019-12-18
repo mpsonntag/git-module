@@ -17,19 +17,19 @@ import (
 type ArchiveType int
 
 const (
-	ZIP ArchiveType = iota + 1
-	TARGZ
-	GIN
+	ArchiveZip ArchiveType = iota + 1
+	ArchiveTarGz
+	ArchiveGIN
 )
 
 func (c *Commit) CreateArchive(target string, archiveType ArchiveType, cloneL string) error {
 	var format string
 	switch archiveType {
-	case ZIP:
+	case ArchiveZip:
 		format = "zip"
-	case TARGZ:
+	case ArchiveTarGz:
 		format = "tar.gz"
-	case GIN:
+	case ArchiveGIN:
 		to := filepath.Join(setting.Repository.Upload.TempPath, "archives", filepath.Base(strings.TrimSuffix(c.repo.Path, ".git")))
 		defer os.RemoveAll(to)
 		_, err := NewCommand("clone", c.repo.Path, to).RunTimeout(-1)
