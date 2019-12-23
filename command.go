@@ -56,7 +56,7 @@ func (c *Command) AddEnvs(envs ...string) *Command {
 	return c
 }
 
-const DEFAULT_TIMEOUT = 60 * time.Second
+const DEFAULT_TIMEOUT = 1 * time.Second
 
 // RunInDirTimeoutPipeline executes the command in given directory with given timeout,
 // it pipes stdout and stderr to given io.Writer.
