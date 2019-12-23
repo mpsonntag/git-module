@@ -65,6 +65,9 @@ func (c *Command) RunInDirTimeoutPipeline(timeout time.Duration, dir string, std
 		timeout = DEFAULT_TIMEOUT
 	}
 
+	fmt.Printf("Running command: %s\n", c.String())
+	fmt.Printf("Timeout is: %+v\n", timeout)
+
 	if len(dir) == 0 {
 		log(c.String())
 	} else {
