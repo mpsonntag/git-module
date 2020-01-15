@@ -1,4 +1,4 @@
-module github.com/achilleas-k/git-module
+module github.com/G-Node/git-module
 
 go 1.12
 
