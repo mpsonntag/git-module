@@ -12,8 +12,8 @@ env:
 
 jobs:
   linters:
-    # For now allow all linters to fail until the project catches 
-    # up to gogs upstream and custom code is cleaned up.
+    # go vet and go fmt are mandatory.
+    # Other linters are optional but should dispay issues.
     name: Linters
     runs-on: ubuntu-latest
     steps:
@@ -24,12 +24,10 @@ jobs:
           go-version: '1.16'
       - name: Run go vet
         run: go vet ./...
-        continue-on-error: true
       - name: Run gofmt
         run: |
           gofmt -s -l .
           if [ "$(gofmt -l . | wc -l)" -gt 0 ]; then exit 1; fi
-        continue-on-error: true
       - name: Run golint
         run: |
           go get golang.org/x/lint/golint
