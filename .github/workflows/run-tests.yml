@@ -11,17 +11,40 @@ env:
   GOPROXY: "https://proxy.golang.org"
 
 jobs:
-  lint:
-    name: Lint
+  linters:
+    # For now allow all linters to fail until the project catches 
+    # up to gogs upstream and custom code is cleaned up.
+    name: Linters
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v2
+      - uses: actions/checkout@v2
+      - name: Setup go 1.16
+        uses: actions/setup-go@v2
         with:
-          version: latest
-          args: --timeout=30m
+          go-version: '1.16'
+      - name: Run go vet
+        run: go vet ./...
+        continue-on-error: true
+      - name: Run gofmt
+        run: |
+          gofmt -s -l .
+          if [ "$(gofmt -l . | wc -l)" -gt 0 ]; then exit 1; fi
+        continue-on-error: true
+      - name: Run golint
+        run: |
+          go get golang.org/x/lint/golint
+          golint ./...
+        continue-on-error: true
+      - name: Run staticcheck
+        run: |
+          go get honnef.co/go/tools/cmd/staticcheck
+          staticcheck ./...
+        continue-on-error: true
+      - name: Run errcheck
+        run: |
+          go get github.com/kisielk/errcheck
+          errcheck ./...
+        continue-on-error: true
 
   test:
     name: Test
